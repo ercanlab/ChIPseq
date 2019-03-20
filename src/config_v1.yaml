@@ -1,0 +1,79 @@
+######################
+## Configuration file for ChIPseq pipelines
+## Used in ErcanLab_ChIP-seq_analysis_v5_slurm.docx protocol found in Ercan's lab google drive.
+##
+## Author: Diogo Mesquita - dam740@nyu.edu
+##
+## Usage:
+##   Edit this configuration with the values for your analysis.
+##
+##   All replicates should be added to the 'infiles' list as a separate element.
+##
+##   Elements of 'infiles' must have (by this order):
+##       - sample_id               : unique identifier of samples. Replicates must have the same sample_id
+##                                   (for example all files corresponding to the same protein and their
+##                                   controls must have the same id)
+##       - protein_name            : name of the protein being chipped (again this value must be the same
+##                                   for all replicates of the same sample)
+##       - average_descriptive_name: the descriptive name to give to the average files of a given sample.
+##                                   Again this field must be the same for replicates of the same sample (since
+##                                   they all will contribute to the same average file)
+##                                   Also note that the chip sequence IDs of the different replicates that are
+##                                   merged will be appended to this name automatically so there is no need for
+##                                   you to add them here explicitly
+##       - input_file              : name of the input file (NOT the path).
+##       - input_seq_id            : sequence ID of the input file
+##       - chip_file               : name of the chip file (NOT the path).
+##       - chip_seq_id             : sequence ID of the chip file
+##
+##   WARNING: The order of these fields must be kept!
+##
+---
+nyuid: dam740
+mail: dam740@nyu.edu
+
+# probably don't need to change the next two lines
+sbatch_scripts: /scratch/cgsb/ercan/scripts/chip/slurm
+gene_tss_annot: /scratch/cgsb/ercan/annot/Meyer_GroSeq_c_elegans.WS220.WS230.gene.annotation.TSS.all.sorted.bed
+
+infiles:
+  - sample_id: 1
+    protein_name: dpy26_MK14
+    average_descriptive_name: DPY26_MK14_Emb_ext353_input_AKM26
+    input_file: input_AKM26_MK14_Emb.fastq.gz
+    input_seq_id: AKM26
+    chip_file: DPY26_MK14_Emb_ext353_AKM03_input_AKM26.fastq.gz
+    chip_seq_id: AKM03
+
+  - sample_id: 2
+    protein_name: GFP_MK14
+    average_descriptive_name: GFP_MK14_Emb_ext353_input_AKM26
+    input_file: input_AKM26_MK14_Emb.fastq.gz
+    input_seq_id: AKM26
+    chip_file: GFP_MK14_Emb_ext353_AKM02_input_AKM26.fastq.gz
+    chip_seq_id: AKM02
+
+  - sample_id: 3
+    protein_name: dpy26_KB01
+    average_descriptive_name: DPY26_KB01_Emb_ext354_input_AKM27
+    input_file: input_AKM27_KB01_Emb.fastq.gz
+    input_seq_id: AKM27
+    chip_file: DPY26_KB01_Emb_ext354_AKM05_input_AKM27.fastq.gz
+    chip_seq_id: AKM05
+
+  - sample_id: 4
+    protein_name: GFP_KB01
+    average_descriptive_name: GFP_KB01_Emb_ext354_input_AKM27
+    input_file: input_AKM27_KB01_Emb.fastq.gz
+    input_seq_id: AKM27
+    chip_file: GFP_KB01_Emb_ext354_AKM04_input_AKM27.fastq.gz
+    chip_seq_id: AKM04
+
+ -  sample_id: 5
+    protein_name: SDC3_KB01
+    average_descriptive_name: SDC3_KB01_Emb_ext354_input_AKM27
+    input_file: input_AKM27_KB01_Emb.fastq.gz
+    input_seq_id: AKM27
+    chip_file: SDC3_KB01_Emb_ext354_AKM06_input_AKM27.fastq.gz
+    chip_seq_id: AKM06
+

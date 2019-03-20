@@ -1,0 +1,17 @@
+######################
+## Configuration file for trackhub setup
+## Used in ErcanLab_ChIP-seq_analysis_v5_slurm.docx protocol found in Ercan's lab google drive.
+##
+## Author: Diogo Mesquita - dam740@nyu.edu
+##
+## Usage:
+##   Edit this configuration with the values of your trackhub
+##
+## Fields:
+##   nyuid  : NYU NetID
+##   mail   : email
+##   date   : mm_dd_yy
+---
+nyuid: dam740
+mail: dam740@nyu.edu
+date: 11_28_18
