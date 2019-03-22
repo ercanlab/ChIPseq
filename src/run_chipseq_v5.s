@@ -41,7 +41,6 @@ mkdir -p $metadata_dir
 egrep -A 6 "sample_id: [0-9]+" config_v1.yaml | while read -r line ; do
   val="$(cut -d ' ' -f 2 <<< $line)"
   if [[ -n "$(grep 'sample_id:' <<< $line)" ]]; then
-    #TODO: how to make config to get good sample_id
     val="$(cut -d ' ' -f 3 <<< $line)"
     sample_id="$val"
     printf "Sample: $sample_id\n"
@@ -67,7 +66,7 @@ egrep -A 6 "sample_id: [0-9]+" config_v1.yaml | while read -r line ; do
     printf ""
     printf "${chip} ${chip_seq_id} ${input} ${input_seq_id}\n" >> $metadata_dir/paired_${sample_id}.txt
     printf "${protein} ${average_descriptive_name}" > $metadata_dir/metadata_${sample_id}.txt
-    printf "${chip}_BOWTIE.bam ${input}_BOWTIE.bam ${chip} single\n" >> $forMacs
+    printf "${chip}.bam ${input}.bam ${chip} single\n" >> $forMacs
     printf "\----------\n"
   fi
 done
@@ -78,29 +77,31 @@ gunzip $WORKING_DIR/*.gz
 
 ############### Run Bowtie
 
-ls *fastq > files.txt
-n=$(wc -l files.txt | awk '$0=$1')
+ls *.fastq > files.txt 2> /dev/null
+n=$(wc -l files.txt | awk '{print $1}')
 
-echo "Running Bowtie..."
-job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bowtie_%j.out\
-                --error=$WORKING_DIR/reports/slurm_bowtie_%j.err\
-                --mail-type=ALL\
-                --mail-user=$MAIL\
-                --array=1-$n\
-                $SBATCH_SCRIPTS/doBowtie_Single.s)
+if (($n > 0)); then
+  echo "Running Bowtie..."
+  job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bowtie_%j.out\
+                  --error=$WORKING_DIR/reports/slurm_bowtie_%j.err\
+                  --mail-type=ALL\
+                  --mail-user=$MAIL\
+                  --array=1-$n\
+                  $SBATCH_SCRIPTS/doBowtie_Single.s)
 
-wait_for_job "$job_out"
-echo "Bowtie finished..."
+  wait_for_job "$job_out"
+  echo "Bowtie finished..."
+
+  # Record keeping
+  mkdir -p ReadAlignments
+  mv Read_Alignment*txt ReadAlignments
+
+  # Get organized
+  mkdir Fastq
+  mv *fastq Fastq
+fi
 
 rm files.txt
-
-# Record keeping
-mkdir -p ReadAlignments
-mv Read_Alignment*txt ReadAlignments
-
-# Get organized
-mkdir Fastq
-mv *fastq Fastq
 
 mkdir BAM
 mv *bam BAM
@@ -135,8 +136,8 @@ for sample_file in $metadata_dir/paired_*; do
   inp_seqs=""
   while read -r line || [[ -n "$line" ]]; do
     read chip chip_seq_id input input_seq_id <<< $line
-    chips+=("${chip}_BOWTIE.bam")
-    inps+=("${input}_BOWTIE.bam")
+    chips+=("${chip}.bam")
+    inps+=("${input}.bam")
     [[ -n $chip_seqs ]] && chip_seqs="${chip_seqs}_${chip_seq_id}" || chip_seqs="$chip_seq_id"
     [[ -n $inp_seqs ]] && inp_seqs="${inp_seqs}_${input_seq_id}" || inp_seqs="$input_seq_id"
   done < $sample_file
@@ -151,8 +152,8 @@ for sample_file in $metadata_dir/paired_*; do
   inp_seqs="avg_${inp_seqs}"
   merged_chip_prefix="${average_descriptive_name}_${chip_seqs}_chip"
   merged_inp_prefix="${average_descriptive_name}_${inp_seqs}_input"
-  merged_chip_bam="${merged_chip_prefix}_BOWTIE.bam"
-  merged_inp_bam="${merged_inp_prefix}_BOWTIE.bam"
+  merged_chip_bam="${merged_chip_prefix}.bam"
+  merged_inp_bam="${merged_inp_prefix}.bam"
   printf "$merged_chip_bam ${chips[*]}\n" >> $forMerge
   printf "$merged_inp_bam ${inps[*]}\n" >> $forMerge
   printf "$merged_chip_prefix ${chip_seqs} $merged_inp_prefix ${inp_seqs}\n" >> $sample_file
@@ -173,7 +174,7 @@ wait_for_job "$job_out"
 rm $forMerge
 
 # sort and index merged bams
-tail -q -n 1 $metadata_dir/paired_* | sed 's/[[:space:]]/_BOWTIE.bam\n/g' | sed '2~2d' > forSort.txt
+tail -q -n 1 $metadata_dir/paired_* | sed 's/[[:space:]]/.bam\n/g' | sed '2~2d' > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
 echo "Sorting and indexing merged BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\

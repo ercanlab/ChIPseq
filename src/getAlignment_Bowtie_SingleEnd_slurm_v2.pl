@@ -21,7 +21,7 @@ my $file = shift();
 
 	my $indexfile = "/scratch/cgsb/ercan/annot/forBowtie/c_elegans.WS220";
 	my $samfile = $file;
-	$samfile =~ s/.fastq/_BOWTIE.sam/;
+	$samfile =~ s/.fastq/.sam/;
 	my $bamfile = $samfile;
 	$bamfile =~ s/.sam/.bam/;
 	my $bresult = $id."_bresult.txt";

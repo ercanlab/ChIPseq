@@ -15,7 +15,7 @@ file=`sed -n ${val}p files.txt`
 
 perl /scratch/cgsb/ercan/scripts/chip/slurm/getAlignment_Bowtie_SingleEnd_slurm_v2.pl $file
 
-bam_file=${file%%.fastq}_BOWTIE.bam
+bam_file=${file%%.fastq}.bam
 
 # change chromsome naming to be able to see in UCSC
 samtools view -H $bam_file | sed -r -e 's/chromosome_(I*V*|M|X)/chr\1/Ig' -e 's/MtDNA/M/gI' | samtools reheader - $bam_file > ${bam_file}_chr.bam

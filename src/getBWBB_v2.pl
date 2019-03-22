@@ -98,7 +98,7 @@ sub loadWig {
 # 2. convert wig to bigwig
     my $bwfile = $file;
     $bwfile =~ s/.wig/.bw/;
-    system("wigToBigWig  $temp ~/Annotations/ce10_chromInfo.txt $bwfile");
+    system("wigToBigWig  $temp /scratch/cgsb/ercan/annot/ce10_chromInfo.txt $bwfile");
 
 # 3. delete wig file
     system("rm $temp");
@@ -132,8 +132,7 @@ sub loadBed {
     # 2. convert bed to bigbed
     my $bbfile = $file;
     $bbfile =~ s/.bed/.bb/;
-    if ()
-        system("bedToBigBed -as=/scratch/cgsb/ercan/scripts/trackhubs/narrowPeak.as -type=bed6+4 $file ~/Annotations/ce10_chromInfo.txt $bbfile");
+        system("bedToBigBed -as=/scratch/cgsb/ercan/scripts/trackhubs/narrowPeak.as -type=bed6+4 $file /scratch/cgsb/ercan/annot/ce10_chromInfo.txt $bbfile");
     system("rm $temp");
 }
 
