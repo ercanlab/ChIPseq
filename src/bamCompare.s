@@ -41,19 +41,22 @@ printf "\nComputing $chip coverage...\n"
 chip_raw_coverage="${chip}.chip.SeqDepthNorm.bdg"
 bamCoverage --bam ${chip}.bam -o $chip_raw_coverage --binSize 100 --outFileFormat bedgraph
 
+#Compute the median coverage
 compute_median $chip_raw_coverage $median_coverage_dir/$chip.txt
 read median_chip < $median_coverage_dir/${chip}.txt
 printf "\n$chip_id median coverage: $median_chip\n"
 
+#Compute the Input coverage over 100 bp bins
 printf "\nComputing $input coverage...\n"
 input_raw_coverage="${input}.input.SeqDepthNorm.bdg"
 bamCoverage --bam ${input}.bam -o $input_raw_coverage --binSize 100 --outFileFormat bedgraph
 
+#Compute the input coverage
 compute_median $input_raw_coverage $median_coverage_dir/$input.txt
 read median_input < $median_coverage_dir/${input}.txt
 printf "\n$input_id median coverage: $median_input\n"
 
-# compute inputsub
+# Use Bamcompare to caluclate input subtracted and ratio of coverage data between input and ChIPP datasets
 printf "\nRunning bamCompare inputsubt for $chip and $input\n"
 bamCompare -b1 ${chip}.bam -b2 ${input}.bam -o ${chip}_inputsubt.bw --scaleFactors $median_input:$median_chip --operation subtract --binSize 10 --extendReads 200
 
