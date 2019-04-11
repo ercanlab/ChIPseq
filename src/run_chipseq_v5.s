@@ -26,15 +26,18 @@ wait_for_job(){
   done
 }
 
+#Define lab directory for automatic output archiving
 ercan_chip="/scratch/cgsb/ercan/chip"
 
 echo "Running ChIP-seq pipeline"
 
+#Move working directory to match that of where the pipeline was initiated
 cd $WORKING_DIR
 
 mkdir -p reports
 
-# Parse the config file and save the metadata in the metadata_dir directory
+# Parse the config file and save the metadata in the metadata_dir directory.
+# This nested ifelse will get the protein names, chip IDs, input IDs etc. 
 metadata_dir=$WORKING_DIR/metadata_dir
 forMacs=$WORKING_DIR/forMacs.txt
 mkdir -p $metadata_dir
@@ -77,9 +80,11 @@ gunzip $WORKING_DIR/*.gz
 
 ############### Run Bowtie
 
+#List and count many fastqs in the directory 
 ls *.fastq > files.txt 2> /dev/null
 n=$(wc -l files.txt | awk '{print $1}')
 
+#If there are fastqs then run bowtie
 if (($n > 0)); then
   echo "Running Bowtie..."
   job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bowtie_%j.out\
@@ -92,17 +97,19 @@ if (($n > 0)); then
   wait_for_job "$job_out"
   echo "Bowtie finished..."
 
-  # Record keeping
+  # Record keeping. Save the bowite mapping metadata
   mkdir -p ReadAlignments
   mv Read_Alignment*txt ReadAlignments
 
-  # Get organized
+  # Get organized. Move the Fastq files into their own directory
   mkdir Fastq
   mv *fastq Fastq
 fi
 
+#Remove the input name file
 rm files.txt
 
+# Get organized. Move the mapped BAM files to their own directory
 mkdir BAM
 mv *bam BAM
 
@@ -111,8 +118,10 @@ cd $WORKING_DIR/BAM
 
 ############### Sort and index bam files
 
+#List and count many BAMs in the directory 
 ls *.bam > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
+
 echo "Sorting and indexing BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_sortBam_%j.err\
