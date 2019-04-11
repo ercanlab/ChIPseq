@@ -122,6 +122,7 @@ cd $WORKING_DIR/BAM
 ls *.bam > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
 
+#BAM files are sorted and indexed using sam tools, to allow further processing of bam files downstream
 echo "Sorting and indexing BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_sortBam_%j.err\
@@ -134,7 +135,6 @@ wait_for_job "$job_out"
 
 
 ############### Merge BAM files
-
 
 # Create the input file for the merging script
 forMerge=$WORKING_DIR/BAM/forMerge.txt
@@ -169,9 +169,11 @@ for sample_file in $metadata_dir/paired_*; do
   printf "$merged_chip_bam $merged_inp_bam $merged_chip_prefix merged\n" >> $forMacs
 done
 
-# merge the files
+# Count how many BAMs mergers required using merger input file
 n=$(wc -l $forMerge | awk '$0=$1')
 echo "Merging BAM files..."
+
+#BAM files are merged if they are replicates using samtools
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_mergeBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_mergeBam_%j.err\
                 --mail-type=ALL\
@@ -183,8 +185,11 @@ wait_for_job "$job_out"
 rm $forMerge
 
 # sort and index merged bams
+# Define and count how many merged BAM files there are
 tail -q -n 1 $metadata_dir/paired_* | sed 's/[[:space:]]/.bam\n/g' | sed '2~2d' > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
+
+#Merged BAM files are sorted and indexed
 echo "Sorting and indexing merged BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_sortBam_%j.err\
@@ -196,7 +201,7 @@ wait_for_job "$job_out"
 
 rm forSort.txt
 
-# Record keeping
+# Record keeping. Put merged BAMs in one place
 cp *bam $ercan_chip/ChIPseq_bamfiles/
 
 ############## BamCompare (generate bigwig files)
@@ -205,7 +210,7 @@ cp *bam $ercan_chip/ChIPseq_bamfiles/
 forBamCompare=forBamCompare.txt
 cat $metadata_dir/paired_*.txt > $forBamCompare
 
-# Run bamcompare
+# Define and count how many merged BAM files there are
 n=$(wc -l $forBamCompare | awk '$0=$1')
 
 echo "Running bamCompare..."
