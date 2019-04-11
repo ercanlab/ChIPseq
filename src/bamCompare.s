@@ -10,11 +10,13 @@
 ## NOTE: This script is specific to the ChIP-seq pipeline
 ##
 
+#Load in required tools
 module purge
 module load samtools/intel/1.6
 module load deeptools/3.0.2
 module load r/intel/3.4.2
 
+#Defin function that will compute median coverage
 compute_median(){
   bdg="$1"
   fout="$2"
@@ -25,7 +27,7 @@ compute_median(){
   rm $ftemp
 }
 
-# set up
+# set up file directories for outputs
 median_coverage_dir=MedianCoverage
 mkdir -p $median_coverage_dir
 
@@ -34,6 +36,7 @@ val=$SLURM_ARRAY_TASK_ID
 params=$(sed -n ${val}p forBamCompare.txt)
 read -r chip chip_id input input_id <<< $params
 
+#Compute the ChIP coverage over 100 bp bins
 printf "\nComputing $chip coverage...\n"
 chip_raw_coverage="${chip}.chip.SeqDepthNorm.bdg"
 bamCoverage --bam ${chip}.bam -o $chip_raw_coverage --binSize 100 --outFileFormat bedgraph
