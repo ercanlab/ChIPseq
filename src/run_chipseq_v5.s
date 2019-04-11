@@ -213,6 +213,7 @@ cat $metadata_dir/paired_*.txt > $forBamCompare
 # Define and count how many merged BAM files there are
 n=$(wc -l $forBamCompare | awk '$0=$1')
 
+# Bam compare is used to get coverage bedgraphs of input and ChIP, along with input subtracted and ratio bigwigs
 echo "Running bamCompare..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bamCompare_%j.out\
                  --mail-type=ALL\
@@ -223,10 +224,10 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bamCompare_%j.out\
 wait_for_job "$job_out"
 echo "bamCompare finished..."
 
-# clean-up
+# clean-up to remove the input metadadta
 rm $forBamCompare
 
-# organize
+# organize. output files are saved into specific directories
 mkdir -p InputSubtCoverage RatioCoverage RawInputCoverage RawChipCoverage
 mv *chip.SeqDepthNorm.bdg RawChipCoverage
 mv *input.SeqDepthNorm.bdg RawInputCoverage
@@ -236,7 +237,7 @@ mv InputSubtCoverage RatioCoverage RawInputCoverage RawChipCoverage MedianCovera
 
 cd $WORKING_DIR
 
-# Record keeping
+# Record keeping. Create a copy of files that we want to save into lab scratch so it will be archived
 cp InputSubtCoverage/* $ercan_chip/ChIPseq_INSubt
 cp RatioCoverage/* $ercan_chip/ChIPseq_RatioCoverage
 cp MedianCoverage/* $ercan_chip/ChIPseq_MedianCoverage
@@ -281,8 +282,11 @@ mv $forMacs forMacs.txt
 # because we're running this job in parallel it's important to create
 # this directory here to avoid errors
 mkdir -p MACSoutput
+
+#Count how many files we will calculate MACs peaks for
 n=$(wc -l forMacs.txt | awk '$0=$1')
 
+#Run MACS to identify peaks of ChIP enrichment
 echo "Running MACS..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_MACS2_%j.out\
                  --error=$WORKING_DIR/reports/slurm_MACS2_%j.err\
@@ -294,6 +298,7 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_MACS2_%j.out\
 wait_for_job "$job_out"
 echo "MACS finished..."
 
+#Remove the input files
 rm forMacs.txt
 
 # organize
