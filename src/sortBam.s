@@ -24,9 +24,9 @@ val=$SLURM_ARRAY_TASK_ID
 bamfile=$(sed -n ${val}p forSort.txt)
 
 printf "Removing duplicates\n"
-#Remove all duplicates that appear more then 5 times. Can modify duplicate number easily by 
-#changing the --keep-dup parameter to another number
-macs2 filterdup -f BAM --keep-dup=5 -i $bamfile -o ${bamfile}.bed
+#Remove all duplicates that appear more then expected. Can modify duplicate number easily by 
+#adding in the --keep-dup parameter to another number i.e. --keep-dup=5
+macs2 filterdup -f BAM -i $bamfile -o ${bamfile}.bed
 
 #Sed will remove any negatvie numberr and replace it with 0. Some alignments end up -ve due 
 #to errors at the begininning of read.s
