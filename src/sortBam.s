@@ -27,9 +27,11 @@ printf "Removing duplicates\n"
 #Remove all duplicates that appear more then 5 times. Can modify duplicate number easily by 
 #changing the --keep-dup parameter to another number
 macs2 filterdup -f BAM --keep-dup=5 -i $bamfile -o ${bamfile}.bed
+
 #Sed will remove any negatvie numberr and replace it with 0. Some alignments end up -ve due 
 #to errors at the begininning of read.s
 sed -i 's/-[0-9][0-9]*/1/' ${bamfile}.bed
+
 #Convert the bed file output back to a bam file
 bedToBam -i ${bamfile}.bed -g /scratch/cgsb/ercan/annot/forBowtie/WS220.genome > $bamfile
 
