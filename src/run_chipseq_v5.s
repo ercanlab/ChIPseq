@@ -10,7 +10,9 @@
 ##
 # Waits for a sbatch job to finish.
 # Input: string, the message returned by the sbatch command
-#        e.g: 'Submitted batch job 4424072'
+#        e.g: 'Submitted batch job 4424072' ID i
+# Will query the queue to ask if the job ID is found. Will 
+# sleep progress until job is cleared from the queue.
 ##
 wait_for_job(){
   # extract only the jobid from the job output
