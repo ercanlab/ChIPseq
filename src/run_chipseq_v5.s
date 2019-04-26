@@ -28,15 +28,18 @@ wait_for_job(){
   done
 }
 
+#Define lab directory for automatic output archiving
 ercan_chip="/scratch/cgsb/ercan/chip"
 
 echo "Running ChIP-seq pipeline"
 
+#Move working directory to match that of where the pipeline was initiated
 cd $WORKING_DIR
 
 mkdir -p reports
 
-# Parse the config file and save the metadata in the metadata_dir directory
+# Parse the config file and save the metadata in the metadata_dir directory.
+# This nested ifelse will get the protein names, chip IDs, input IDs etc. 
 metadata_dir=$WORKING_DIR/metadata_dir
 forMacs=$WORKING_DIR/forMacs.txt
 mkdir -p $metadata_dir
@@ -79,9 +82,11 @@ gunzip $WORKING_DIR/*.gz
 
 ############### Run Bowtie
 
+#List and count many fastqs in the directory 
 ls *.fastq > files.txt 2> /dev/null
 n=$(wc -l files.txt | awk '{print $1}')
 
+#If there are fastqs then run bowtie
 if (($n > 0)); then
   echo "Running Bowtie..."
   job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bowtie_%j.out\
@@ -94,17 +99,19 @@ if (($n > 0)); then
   wait_for_job "$job_out"
   echo "Bowtie finished..."
 
-  # Record keeping
+  # Record keeping. Save the bowite mapping metadata
   mkdir -p ReadAlignments
   mv Read_Alignment*txt ReadAlignments
 
-  # Get organized
+  # Get organized. Move the Fastq files into their own directory
   mkdir Fastq
   mv *fastq Fastq
 fi
 
+#Remove the input name file
 rm files.txt
 
+# Get organized. Move the mapped BAM files to their own directory
 mkdir BAM
 mv *bam BAM
 
@@ -113,8 +120,11 @@ cd $WORKING_DIR/BAM
 
 ############### Sort and index bam files
 
+#List and count many BAMs in the directory 
 ls *.bam > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
+
+#BAM files are sorted and indexed using sam tools, to allow further processing of bam files downstream
 echo "Sorting and indexing BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_sortBam_%j.err\
@@ -127,7 +137,6 @@ wait_for_job "$job_out"
 
 
 ############### Merge BAM files
-
 
 # Create the input file for the merging script
 forMerge=$WORKING_DIR/BAM/forMerge.txt
@@ -162,9 +171,11 @@ for sample_file in $metadata_dir/paired_*; do
   printf "$merged_chip_bam $merged_inp_bam $merged_chip_prefix merged\n" >> $forMacs
 done
 
-# merge the files
+# Count how many BAMs mergers required using merger input file
 n=$(wc -l $forMerge | awk '$0=$1')
 echo "Merging BAM files..."
+
+#BAM files are merged if they are replicates using samtools
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_mergeBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_mergeBam_%j.err\
                 --mail-type=ALL\
@@ -176,8 +187,11 @@ wait_for_job "$job_out"
 rm $forMerge
 
 # sort and index merged bams
+# Define and count how many merged BAM files there are
 tail -q -n 1 $metadata_dir/paired_* | sed 's/[[:space:]]/.bam\n/g' | sed '2~2d' > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
+
+#Merged BAM files are sorted and indexed
 echo "Sorting and indexing merged BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_sortBam_%j.err\
@@ -189,7 +203,7 @@ wait_for_job "$job_out"
 
 rm forSort.txt
 
-# Record keeping
+# Record keeping. Put merged BAMs in one place
 cp *bam $ercan_chip/ChIPseq_bamfiles/
 
 ############## BamCompare (generate bigwig files)
@@ -198,9 +212,10 @@ cp *bam $ercan_chip/ChIPseq_bamfiles/
 forBamCompare=forBamCompare.txt
 cat $metadata_dir/paired_*.txt > $forBamCompare
 
-# Run bamcompare
+# Define and count how many merged BAM files there are
 n=$(wc -l $forBamCompare | awk '$0=$1')
 
+# Bam compare is used to get coverage bedgraphs of input and ChIP, along with input subtracted and ratio bigwigs
 echo "Running bamCompare..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bamCompare_%j.out\
                  --mail-type=ALL\
@@ -211,10 +226,10 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_bamCompare_%j.out\
 wait_for_job "$job_out"
 echo "bamCompare finished..."
 
-# clean-up
+# clean-up to remove the input metadadta
 rm $forBamCompare
 
-# organize
+# organize. output files are saved into specific directories
 mkdir -p InputSubtCoverage RatioCoverage RawInputCoverage RawChipCoverage
 mv *chip.SeqDepthNorm.bdg RawChipCoverage
 mv *input.SeqDepthNorm.bdg RawInputCoverage
@@ -224,7 +239,7 @@ mv InputSubtCoverage RatioCoverage RawInputCoverage RawChipCoverage MedianCovera
 
 cd $WORKING_DIR
 
-# Record keeping
+# Record keeping. Create a copy of files that we want to save into lab scratch so it will be archived
 cp InputSubtCoverage/* $ercan_chip/ChIPseq_INSubt
 cp RatioCoverage/* $ercan_chip/ChIPseq_RatioCoverage
 cp MedianCoverage/* $ercan_chip/ChIPseq_MedianCoverage
@@ -269,8 +284,11 @@ mv $forMacs forMacs.txt
 # because we're running this job in parallel it's important to create
 # this directory here to avoid errors
 mkdir -p MACSoutput
+
+#Count how many files we will calculate MACs peaks for
 n=$(wc -l forMacs.txt | awk '$0=$1')
 
+#Run MACS to identify peaks of ChIP enrichment
 echo "Running MACS..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_MACS2_%j.out\
                  --error=$WORKING_DIR/reports/slurm_MACS2_%j.err\
@@ -282,6 +300,7 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_MACS2_%j.out\
 wait_for_job "$job_out"
 echo "MACS finished..."
 
+#Remove the input files
 rm forMacs.txt
 
 # organize
