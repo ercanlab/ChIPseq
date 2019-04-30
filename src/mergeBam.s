@@ -39,6 +39,6 @@ printf "Merging ${bamfiles[*]:1} into $mergedBam\n"
 samtools merge $mergedBam ${bamfiles[*]:1}
 
 printf "Converting $mergedBam from BAM to BED\n"
-bedtools bamtobed -i $mergedBam > ${$mergedBam}.bed
+bedtools bamtobed -i $mergedBam > ${mergedBam}.bed
 
 exit 0;
