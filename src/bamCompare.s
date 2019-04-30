@@ -4,7 +4,7 @@
 #SBATCH --job-name=bamCompare
 #SBATCH --time=4:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=30GB
+#SBATCH --mem=60GB
 
 ##
 ## NOTE: This script is specific to the ChIP-seq pipeline
