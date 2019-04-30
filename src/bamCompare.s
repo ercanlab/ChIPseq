@@ -4,7 +4,7 @@
 #SBATCH --job-name=bamCompare
 #SBATCH --time=4:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=30GB
+#SBATCH --mem=60GB
 
 ##
 ## NOTE: This script is specific to the ChIP-seq pipeline
@@ -16,7 +16,11 @@ module load samtools/intel/1.6
 module load deeptools/3.0.2
 module load r/intel/3.4.2
 
-#Defin function that will compute median coverage
+#Time
+start=$(date +"%T")
+echo "Start comparng bams at: $start"
+
+#Define function that will compute median coverage
 compute_median(){
   bdg="$1"
   fout="$2"
@@ -62,3 +66,7 @@ bamCompare -b1 ${chip}.bam -b2 ${input}.bam -o ${chip}_inputsubt.bw --scaleFacto
 
 printf "\nRunning bamCompare ratio for $chip and $input\n"
 bamCompare -b1 ${chip}.bam -b2 ${input}.bam -o ${chip}_ratio.bw --scaleFactors $median_input:$median_chip --operation ratio --binSize 10 --extendReads 200
+
+#Time
+end=$(date +"%T")
+echo "Finish comparing bams at: $end"
