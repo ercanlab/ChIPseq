@@ -113,7 +113,7 @@ if (($n > 0)); then
   mv *fastq Fastq
 fi
 
-#Remove the input name file
+#Remove the bowtie input name file
 rm files.txt
 
 # Get organized. Move the mapped BAM files to their own directory
@@ -123,13 +123,15 @@ mv *bam BAM
 cd $WORKING_DIR/BAM
 
 
-############### Sort and index bam files
+############### Remove duplicates, sort and index bam files
 
 #List and count many BAMs in the directory 
 ls *.bam > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
 
-#BAM files are sorted and indexed using sam tools, to allow further processing of bam files downstream
+#Duplicate reads are removed using MACS. The bedfile output is converted back to BAM for 
+#subsequent steps. BAM files are then sorted and indexed using sam tools, to allow further 
+#processing of bam files downstream
 echo "Sorting and indexing BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --error=$WORKING_DIR/reports/slurm_sortBam_%j.err\
@@ -191,7 +193,9 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_mergeBam_%j.out\
 wait_for_job "$job_out"
 rm $forMerge
 
+
 # sort and index merged bams
+
 # Define and count how many merged BAM files there are
 tail -q -n 1 $metadata_dir/paired_* | sed 's/[[:space:]]/.bam\n/g' | sed '2~2d' > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
