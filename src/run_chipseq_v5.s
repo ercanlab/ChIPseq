@@ -207,7 +207,7 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
                 --mail-type=ALL\
                 --mail-user=$MAIL\
                 --array=1-$n\
-                $SBATCH_SCRIPTS/sortBam.s)
+                $SBATCH_SCRIPTS/sortBam_formerge.s)
 wait_for_job "$job_out"
 
 rm forSort.txt
