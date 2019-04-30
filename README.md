@@ -7,5 +7,7 @@ The below instructions will outline the steps to run the ChIP-seq analysis pipel
 ## ErcanLab_ChIP-seq_analysis_v5_slurm
 
 Author: Sevinc Ercan
+
 Implementation: Diogo Mesquita - dam740@nyu.edu, Lena Street - las821@nyu.edu, Matt Paul - matthew.paul.2006@gmail.com
+
 Date: 04.2019
