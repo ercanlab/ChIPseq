@@ -7,6 +7,11 @@
 #SBATCH --mem=20GB
 #SBATCH --mail-type=ALL
 
+
+#Time
+start=$(date +"%T")
+echo "ChIP pipeline starts at: $start"
+
 ##
 # Waits for a sbatch job to finish.
 # Input: string, the message returned by the sbatch command
@@ -368,3 +373,8 @@ rm *.bed files.txt
 mkdir averages single_replicates
 mv *avg* $WORKING_DIR/forUCSC.txt averages
 mv *bb *bw single_replicates
+
+#Report time
+end=$(date +"%T")
+echo "ChIP pipeline finishes at: $end"
+
