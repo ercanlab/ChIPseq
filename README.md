@@ -1,6 +1,6 @@
 # ChIP-seqs 
 
-This repository contains all the scripts to complete ChIP-seq analysis on the prince HPC at NYU. Methodology can be generalized to other systems, but they have been tailor made to be run by members of the Ercan lab. 
+This repository contains all the scripts to complete ChIP-seq analysis on the prince HPC at NYU. Methodology can be generalized to other systems, but they have been tailor made to be run by members of the Ercan lab. The current pipeline is version 5.
 
 ## ErcanLab_ChIP-seq_analysis_v5_slurm
 
