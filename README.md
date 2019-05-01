@@ -15,6 +15,9 @@ Matt Paul - matthew.paul.2006@gmail.com
 
 Date: 04.2019
 
+#### ChIP pipeline flowchart overview
+![chip_pipeline_overview](https://github.com/ercanlab/ChIPseq/blob/master/specs/chip_pipeline_v5.png)
+
 #### Note:
 NYUID is a placeholder. In commands given replace any instance of NYUID with your own NYUID:
 
