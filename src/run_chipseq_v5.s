@@ -349,7 +349,7 @@ cp *.bed $ercan_chip/ChIPseq_MACS/
 
 cd $WORKING_DIR
 rm -rf $metadata_dir
-
+rm BAM/*.bed
 
 ############### forUCSC
 mkdir forUCSC
