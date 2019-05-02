@@ -66,7 +66,10 @@ https://drive.google.com/drive/u/1/folders/0B86yNkEPp_kmcWk5UHd5ZmVIUFk
 Once edited locally on your computer you can transfer it up to the HPCC with the following command:
 
       scp path/to/config_v1.yaml $NYUID@prince.hpc.nyu.edu:/scratch/$NYUID/NewChIPData/
-      
+
+#### Note:
+The config file must contain only the details for the samples youu want to run. If there are extra entries leaving them blank or using a pound sign (#) to mask them does not work. They will be parsed and confuse the metadata files resulting in errors. Instead just delete blank entries. 
+
 #### Note:
 The name of the average files that are ouutput will follow the convention:
 
@@ -116,6 +119,8 @@ You will see something like this if there is an error. The filename indicates th
 Once the job had completed succesfully the WD should look as below:
 ![chip_pipeline_directory_example](https://github.com/ercanlab/ChIPseq/blob/master/specs/chip_pipeline_directory_example.png)
 
+#### Note:
+If there is an error and you succesfully fix the problem, before you decide to rerun make sure you clear your working directory of any files associated with previous run. THere shouuld just be input files (fastq or bam), config file and chipseq script. 
 
 
 ### Creating a Trackhub
