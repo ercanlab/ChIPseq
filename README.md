@@ -27,16 +27,16 @@ Sequenced reads were mapped to WS220/ce10 build of the C. elegans genome using B
 * Ramírez F., Ryan D.P., Grüning B., Bhardwaj V., Kilpert F., Richter A.S., Heyne S., Dündar F., Manke T. deepTools2: A next Generation Web Server for Deep-Sequencing Data Analysis. Nucleic Acids Res. 2016 Jul 8;44(W1):W160-5. doi: 10.1093/nar/gkw257.
 
 
+#### 1. Create a new directory WD for the data (WD for working directory). This can be any name. Here we have used 'NewChIPData'.
+
+    mkdir /scratch/$NYUID/NewChIPData
+    cd /scratch/$NYUID/NewChIPData
+    
 #### Note:
 NYUID is a placeholder. In commands given replace any instance of NYUID with your own NYUID:
 
       mkdir /scratch/$NYUID/NewChIPData    #NYUID must be replaced in this directory
       Example: mkdir /scratch/mrp420/NewChIPData   #This is correct command as I have put my own NYUID (mrp420) into the directory
-
-#### 1. Create a new directory WD for the data (WD for working directory). This can be any name. Here we have used 'NewChIPData'.
-
-    mkdir /scratch/$NYUID/NewChIPData
-    cd /scratch/$NYUID/NewChIPData
     
 #### 2. Copy the data you want to analyze into your directory. These can be bam, fastq files or both. The directory of the new data will be given by Gencore once they have finshed sequencing. Otherwise if it is an older files the bam files can be found in the ercan lab scratch, or the locations of fastqs will be in the data google spreadsheets. 
 
