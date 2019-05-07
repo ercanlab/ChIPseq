@@ -36,7 +36,7 @@ cd /scratch/$NYUID/NewChIPData
 
 #### Note:
 NYUID is a placeholder. In commands given replace any instance of NYUID with your own NYUID:
-```sh
+```{r, engine='sh', mkdir}
 mkdir /scratch/$NYUID/NewChIPData    #NYUID must be replaced in this directory
 ```
 Example: 
