@@ -28,10 +28,12 @@ Sequenced reads were mapped to WS220/ce10 build of the C. elegans genome using B
 
 
 #### 1. Create a new directory WD for the data (WD for working directory). This can be any name. Here we have used 'NewChIPData'.
-```sh
-$ mkdir /scratch/$NYUID/NewChIPData
-$ cd /scratch/$NYUID/NewChIPData
-```    
+
+```shell
+mkdir /scratch/$NYUID/NewChIPData
+cd /scratch/$NYUID/NewChIPData
+```
+
 #### Note:
 NYUID is a placeholder. In commands given replace any instance of NYUID with your own NYUID:
 ```sh
