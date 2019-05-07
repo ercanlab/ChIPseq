@@ -36,17 +36,17 @@ cd /scratch/$NYUID/NewChIPData
 
 #### Note:
 NYUID is a placeholder. In commands given replace any instance of NYUID with your own NYUID:
-```powershell
+```sh
 mkdir /scratch/$NYUID/NewChIPData    #NYUID must be replaced in this directory
 ```
 Example: 
-```shell
+```sh
 mkdir /scratch/mrp420/NewChIPData   #This is correct command as I have put my own NYUID (mrp420) into the directory
 ```
 
 #### 2. Copy the data you want to analyze into your directory. These can be bam, fastq files or both. The directory of the new data will be given by Gencore once they have finshed sequencing. Otherwise if it is an older files the bam files can be found in the ercan lab scratch, or the locations of fastqs will be in the data google spreadsheets. 
 
-```bash
+```sh
 cp /scratch/cgsb/gencore/out/Ercan/DirectoryName/FileName* /scratch/$NYUID/NewChIPData/ 
 ```
 
