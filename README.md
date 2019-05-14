@@ -56,18 +56,29 @@ cp /scratch/cgsb/gencore/out/Ercan/DirectoryName/FileName* /scratch/$NYUID/NewCh
 mv Oldfilename.fastq Newfilename.fastq
 ```
 
+<<<<<<< HEAD
 Naming Convention:
 
     ChIP:
     <descriptive_name>_<extract>_<sequence_ID>_input_<input_ID>.fastq
+=======
+Naming Convention:	
+    
+    ChIP: 
+    <descriptive_name>_<extract>_<Sequencing_ID_for_ChIP>_input_<Sequencing_ID_for_Input>.fastq
+>>>>>>> 5b97d9d12580164b244e84f30978b2f98acff27f
     Example: DPY27_N2_Emb_ext10_CJ132_input_CJ19.fastq
 
     Input:
-    input_<input_id>_<strain>_<stage>_<extract>.fastq
+    input_<Sequencing_ID_for_Input>_<strain>_<stage>_<extract>.fastq
     Example: input_CJ19_N2_Emb_ext10.fastq
 
     If the experiment involved RNAi, indicate so in the Strain name
     Example: ASH-2_N2DPY27RNAi_Emb_ext358_AKM22_input_LAS95.fastq
+    
+#### Note:
+Most errors will come from typos and the use of incorrect library names. Double-check this section to ensure that this is correct. The same goes for entering the names into the config file (step 5)  
+Though placeholder library identifiers and extracts numbers will work, it essential for proper archiving of the data that the right ones are used. As the pipeline automatically saves a lot of the output data i.e. BAMs etc, it is essenital that they have the right names so when others look for the processed files they can find them. All required infromtaion can be found on the lab google sheets.
 
 #### 4. Copy the analysis script to the WD
 
