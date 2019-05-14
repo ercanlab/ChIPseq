@@ -363,6 +363,10 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_clipBeds_%j.out\
                 --mail-user=$MAIL\
                 --array=1-$n\
                 $SBATCH_SCRIPTS/clipBeds.s)
+
+wait_for_job "$job_out"
+echo "bedClip finished..."
+
 rm *.bed files.txt
 
 ############### forUCSC
