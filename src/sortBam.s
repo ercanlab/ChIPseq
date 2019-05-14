@@ -24,13 +24,15 @@ val=$SLURM_ARRAY_TASK_ID
 bamfile=$(sed -n ${val}p forSort.txt)
 
 printf "Removing duplicates\n"
-#Remove all duplicates that appear more then expected. Can modify duplicate number easily by 
+#Remove all duplicates that appear more then expected. Can modify duplicate number easily by
 #adding in the --keep-dup parameter to another number i.e. --keep-dup=5
 macs2 filterdup -f BAM -i $bamfile -o ${bamfile}.bed
 
-#Sed will remove any negatvie numberr and replace it with 0. Some alignments end up -ve due 
+#Sed will remove any negatvie numberr and replace it with 0. Some alignments end up -ve due
 #to errors at the begininning of read.s
-sed -i 's/-[0-9][0-9]*/1/' ${bamfile}.bed
+mv ${bamfile}.bed temp${val}.bed
+bedClip temp${val}.bed /scratch/cgsb/ercan/annot/forBowtie/WS220.genome ${bamfile}.bed
+rm temp${val}.bed
 
 #Convert the bed file output back to a bam file
 bedToBam -i ${bamfile}.bed -g /scratch/cgsb/ercan/annot/forBowtie/WS220.genome > $bamfile

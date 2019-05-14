@@ -47,4 +47,3 @@ my $file = shift();
 	print LOG2 "BOWTIE RESULT\n";
 	my $append_bresult = `cat $bresult >>$log2`;
 	my $rm = `rm $bresult`;
-

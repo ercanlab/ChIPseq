@@ -35,11 +35,9 @@ params=$(sed -n ${val}p forMerge.txt)
 read -r -a bamfiles <<< $params
 mergedBam=${bamfiles[0]}
 
-#merge the bam files otogetherr from each replicate
 printf "Merging ${bamfiles[*]:1} into $mergedBam\n"
 samtools merge $mergedBam ${bamfiles[*]:1}
 
-#create a bed file from merged bam to be used to call peaks later wiith MACS
 printf "Converting $mergedBam from BAM to BED\n"
 bedtools bamtobed -i $mergedBam > ${mergedBam}.bed
 

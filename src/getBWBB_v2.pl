@@ -17,7 +17,7 @@
 # perl getBW.pl files.txt
 
 
-my %chr_len = ("chrI" => 15072423, "chrII" => 15279345, "chrIII" => 13783700, "chrIV" => 17493793, "chrM" => 13794, "chrV" => 20924149, "chrX" => 17718866); # ce10
+my %chr_len = ("chrI" => 15072423, "chrII" => 15279345, "chrIII" => 13783700, "chrIV" => 17493793, "chrM" => 13795, "chrV" => 20924149, "chrX" => 17718866); # ce10
 
 use strict;
 use Cwd;
@@ -135,4 +135,3 @@ sub loadBed {
         system("bedToBigBed -as=/scratch/cgsb/ercan/scripts/trackhubs/narrowPeak.as -type=bed6+4 $file /scratch/cgsb/ercan/annot/ce10_chromInfo.txt $bbfile");
     system("rm $temp");
 }
-

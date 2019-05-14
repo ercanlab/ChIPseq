@@ -5,6 +5,6 @@ for f in reports/*; do
   if [[ -n $error ]]; then
    printf "## File $f has the following errors:\n\t$error\n"
    echo "----------"
-   echo 
+   echo
   fi
 done

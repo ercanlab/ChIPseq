@@ -16,7 +16,7 @@ echo "ChIP pipeline starts at: $start"
 # Waits for a sbatch job to finish.
 # Input: string, the message returned by the sbatch command
 #        e.g: 'Submitted batch job 4424072' ID i
-# Will query the queue to ask if the job ID is found. Will 
+# Will query the queue to ask if the job ID is found. Will
 # sleep progress until job is cleared from the queue.
 ##
 wait_for_job(){
@@ -44,7 +44,7 @@ cd $WORKING_DIR
 mkdir -p reports
 
 # Parse the config file and save the metadata in the metadata_dir directory.
-# This nested ifelse will get the protein names, chip IDs, input IDs etc. 
+# This nested ifelse will get the protein names, chip IDs, input IDs etc.
 metadata_dir=$WORKING_DIR/metadata_dir
 forMacs=$WORKING_DIR/forMacs.txt
 mkdir -p $metadata_dir
@@ -87,7 +87,7 @@ gunzip $WORKING_DIR/*.gz
 
 ############### Run Bowtie
 
-#List and count many fastqs in the directory 
+#List and count many fastqs in the directory
 ls *.fastq > files.txt 2> /dev/null
 n=$(wc -l files.txt | awk '{print $1}')
 
@@ -125,12 +125,12 @@ cd $WORKING_DIR/BAM
 
 ############### Remove duplicates, sort and index bam files
 
-#List and count many BAMs in the directory 
+#List and count many BAMs in the directory
 ls *.bam > forSort.txt
 n=$(wc -l forSort.txt | awk '$0=$1')
 
-#Duplicate reads are removed using MACS. The bedfile output is converted back to BAM for 
-#subsequent steps. BAM files are then sorted and indexed using sam tools, to allow further 
+#Duplicate reads are removed using MACS. The bedfile output is converted back to BAM for
+#subsequent steps. BAM files are then sorted and indexed using sam tools, to allow further
 #processing of bam files downstream
 echo "Sorting and indexing BAM files..."
 job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_sortBam_%j.out\
@@ -351,7 +351,22 @@ cd $WORKING_DIR
 rm -rf $metadata_dir
 rm BAM/*.bed
 
+############### clip Beds
+
+cd MACSoutput/
+ls *bed > files.txt
+
+echo "bedClip to remove lines not in the limits of the chromosome annotation..."
+job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_clipBeds_%j.out\
+                --error=$WORKING_DIR/reports/slurm_clipBeds_%j.err\
+                --mail-type=ALL\
+                --mail-user=$MAIL\
+                --array=1-$n\
+                $SBATCH_SCRIPTS/clipBeds.s)
+rm *.bed files.txt
+
 ############### forUCSC
+cd ../
 mkdir forUCSC
 
 cp MACSoutput/*peaks.bed MACSoutput/*peaks_final.bed InputSubtCoverage/*bw RatioCoverage/*bw forUCSC
@@ -381,4 +396,3 @@ mv *bb *bw single_replicates
 #Report time
 end=$(date +"%T")
 echo "ChIP pipeline finishes at: $end"
-
