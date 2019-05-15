@@ -367,7 +367,7 @@ job_out=$(sbatch --output=$WORKING_DIR/reports/slurm_clipBeds_%j.out\
 wait_for_job "$job_out"
 echo "bedClip finished..."
 
-rm *.bed files.txt
+rm files.txt
 
 ############### forUCSC
 cd ../
