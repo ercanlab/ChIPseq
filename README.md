@@ -168,7 +168,7 @@ rm -rf BAM* Fas* for* Ra* Re* Inp* Med* MACS* re* TSS_* m*
 If you started with BAM files (or if the issue is not at the level of mapping and you do not want to run bowtie again) you can substitute moving the contents of Fastq directory with moving contents of BAM directory.
 
 #### Note:
-These 4 examples show how ways to check that the pipeline has worked. Sometimes errors way still slip through. Keep an eye out to make sure  you get all the desired output files.
+These 4 examples show how ways to check that the pipeline has worked. Sometimes errors may still slip through. Keep an eye out to make sure  you get all the desired output files.
 
 
 ### Creating a Trackhub
@@ -231,16 +231,17 @@ Where protein is the protein(s) you had added in the ChIP-seq pipeline configura
 scp $NYUID@prince.hpc.nyu.edu:/path/to/file /var/www/html/myHubs_v2/averages/protein/ce10
 ```
 
-###### B. Rerun the track hub configuration perl script
+###### B. Change directory to the folder containing the files you want to add and run the add_to_existing_hub.sh script
 
 ```sh
 cd /var/www/html/myHubs_v2/averages/protein/ce10
-ls *bw *bb > files.txt
-perl loadBWBBToUCSC.pl files.txt
+source /var/trackhub_scripts/add_to_existing_hub.sh
 ```
 
 ###### C. Add again the trackhub to the UCSC browser
-Follow step 5 and using the url: /var/www/html/myHubs_v2/averages/protein/hub.txt
+Follow step 5 and using the url:
+/var/www/html/myHubs_v2/averages/protein/hub.txt
+http://ercan2.bio.nyu.edu/myHubs_v2/averages/protein/hub.txt
 
 #### 7. Add the track hub info to the TrackHubs tab of the Ercan_Lab_Data_WS220 document in google drive
 Keep the trackhub googlesheets up to date so that others can find the data that has been processed already.The link to the document is https://docs.google.com/spreadsheets/d/1xF8nNs5dqMsMv8Ot29Hhm4Yazjs5UTwtAditn3drjCc/edit#gid=21
