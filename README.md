@@ -245,3 +245,7 @@ http://ercan2.bio.nyu.edu/myHubs_v2/averages/protein/hub.txt
 
 #### 7. Add the track hub info to the TrackHubs tab of the Ercan_Lab_Data_WS220 document in google drive
 Keep the trackhub googlesheets up to date so that others can find the data that has been processed already.The link to the document is https://docs.google.com/spreadsheets/d/1xF8nNs5dqMsMv8Ot29Hhm4Yazjs5UTwtAditn3drjCc/edit#gid=21
+
+#### 8. Add/Backup the hub to the Ercan newhubs2019 google drive folder
+Copy the hub containing folder and its contents into the following Ercan lab google drive folder:
+https://drive.google.com/drive/u/1/folders/1bMq3g0psmllmVTGD8Treo-_mm_SMYDhb
