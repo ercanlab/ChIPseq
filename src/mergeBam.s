@@ -32,7 +32,7 @@ module load bedtools/intel/2.27.1
 
 val=$SLURM_ARRAY_TASK_ID
 params=$(sed -n ${val}p forMerge.txt)
-read -r -a bamfiles <<< $params
+bamfiles=($params)
 mergedBam=${bamfiles[0]}
 
 printf "Merging ${bamfiles[*]:1} into $mergedBam\n"
